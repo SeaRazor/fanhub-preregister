@@ -1,10 +1,10 @@
 module.exports = {
   apps: [
     {
-      name: 'fanhub-preregister',
+      name: 'scorefluence',
       script: 'npm',
       args: 'start',
-      cwd: '/var/www/fanhub-preregister',
+      cwd: '/var/www/scorefluence',
       instances: 'max',
       exec_mode: 'cluster',
       env: {
@@ -15,9 +15,9 @@ module.exports = {
         NODE_ENV: 'production',
         PORT: 3000
       },
-      error_file: '/var/log/pm2/fanhub-preregister-error.log',
-      out_file: '/var/log/pm2/fanhub-preregister-out.log',
-      log_file: '/var/log/pm2/fanhub-preregister.log',
+      error_file: '/var/log/pm2/scorefluence-error.log',
+      out_file: '/var/log/pm2/scorefluence-out.log',
+      log_file: '/var/log/pm2/scorefluence.log',
       time: true,
       log_date_format: 'YYYY-MM-DD HH:mm:ss',
       max_memory_restart: '500M',

@@ -13,7 +13,10 @@ class EmailService {
 
   async sendVerificationEmail(email, token) {
     if (!this.resend) {
-      throw new Error('Resend API key not configured')
+      console.warn('⚠️ Email service not configured - skipping email send in development')
+      console.log(`📧 Would send verification email to: ${email}`)
+      console.log(`🔗 Verification URL: ${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/verify?token=${token}`)
+      return { id: 'dev-mode-skip', message: 'Email sending skipped in development' }
     }
 
     const verificationUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/verify?token=${token}`

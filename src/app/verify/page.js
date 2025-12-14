@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 
-export default function VerifyPage() {
+function VerifyContent() {
   const [status, setStatus] = useState('loading') // loading, success, error
   const [message, setMessage] = useState('')
   const [email, setEmail] = useState('')
@@ -170,5 +170,39 @@ export default function VerifyPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-[#1A1A2E] via-[#2C5282] to-[#4A90E2] text-white">
+      <div className="container mx-auto px-4 py-16">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="mb-8">
+            <div className="flex justify-center mb-6">
+              <Image
+                src="/logo.png"
+                alt="Scorefluence Logo"
+                width={96}
+                height={96}
+                className="w-20 h-20 md:w-24 md:h-24"
+              />
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-[#4A90E2] to-[#6BB6FF] bg-clip-text text-transparent mb-4">
+              Scorefluence
+            </h1>
+            <p className="text-xl text-gray-300">Loading...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default function VerifyPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <VerifyContent />
+    </Suspense>
   )
 }

@@ -1,0 +1,60 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Project-specific files
+# Storage files (will be recreated by the app)
+/data/registrations.json
+
+# Database backup files (contain sensitive data)
+/database/local_data_backup.sql
+/database/schema_backup.sql
+/database/complete_backup.sql
+
+# VPS deployment files (not needed for Vercel)
+/deployment/
+
+# Storage lock files
+/data/.lock
+
+# Template files (these are examples)
+.env.ip-only.template
+.env.production.template

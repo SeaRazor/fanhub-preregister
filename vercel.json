@@ -1,0 +1,16 @@
+{
+  "functions": {
+    "src/app/api/register/route.js": {
+      "maxDuration": 10
+    },
+    "src/app/api/verify/route.js": {
+      "maxDuration": 10
+    },
+    "src/app/api/registrations/route.js": {
+      "maxDuration": 10
+    }
+  },
+  "env": {
+    "STORAGE_TYPE": "json"
+  }
+}

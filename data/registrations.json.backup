@@ -1,0 +1,17 @@
+{
+  "registrations": [
+    {
+      "id": "1764103899579",
+      "email": "e.sidorovich@gmail.com",
+      "status": "registered",
+      "createdAt": "2025-11-25T20:51:39.579Z",
+      "verificationToken": null,
+      "verificationExpiresAt": null,
+      "verifiedAt": "2025-11-25T20:52:21.806Z"
+    }
+  ],
+  "stats": {
+    "totalRegistered": 1,
+    "fakeBaseCount": 15412
+  }
+}

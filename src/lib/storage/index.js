@@ -19,31 +19,14 @@ class StorageFactory {
    * @returns {string} 'memory', 'json', 'database', or 'supabase'
    */
   detectStorageType() {
-    // Check explicit environment variable first
-    if (process.env.STORAGE_TYPE) {
-      console.log(`Found STORAGE_TYPE env var: "${process.env.STORAGE_TYPE}" (typeof: ${typeof process.env.STORAGE_TYPE})`)
-      if (process.env.STORAGE_TYPE.toLowerCase() === 'supabase') {
-        console.log('Using explicit Supabase storage from env var')
-        return 'supabase'
-      } else {
-        console.log(`Explicit storage type set to: ${process.env.STORAGE_TYPE}`)
-        return process.env.STORAGE_TYPE.toLowerCase()
-      }
-    }
-
-    // Check for Supabase configuration
+    // Check for Supabase configuration first - always use if available
     const hasSupabaseConfig = process.env.NEXT_PUBLIC_SUPABASE_URL && 
                              (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY)
     
-    console.log('Storage detection debug:', {
-      explicitType: process.env.STORAGE_TYPE,
-      hasSupabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
-      hasSupabaseAnonKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-      hasSupabaseServiceKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
-      hasSupabaseConfig,
-      isVercel: !!process.env.VERCEL,
-      selectedType: 'will be determined below'
-    })
+    if (hasSupabaseConfig) {
+      console.log('Using Supabase storage (credentials available)')
+      return 'supabase'
+    }
 
     // Auto-detect based on available configuration
     const hasDbConfig = process.env.DB_HOST && 
@@ -51,26 +34,20 @@ class StorageFactory {
                        process.env.DB_USER && 
                        process.env.DB_PASSWORD
 
-    // Prefer Supabase if configured (works in both local and Vercel environments)
-    if (hasSupabaseConfig) {
-      console.log('Selecting Supabase storage (has config)')
-      return 'supabase'
-    }
-
     // In Vercel serverless environment without Supabase, use JSON with /tmp storage
-    if (process.env.VERCEL && !hasSupabaseConfig) {
-      console.log('Selecting JSON storage (Vercel without Supabase)')
+    if (process.env.VERCEL && !hasDbConfig) {
+      console.log('Using JSON storage (Vercel without database config)')
       return 'json'
     }
 
     // Local environment without DB config, use JSON
     if (!hasDbConfig) {
-      console.log('Selecting JSON storage (no DB config)')
+      console.log('Using JSON storage (no database config)')
       return 'json'
     }
 
-    // Default to database if configuration is available
-    console.log('Selecting database storage (fallback)')
+    // Default to PostgreSQL database if configuration is available
+    console.log('Using PostgreSQL database storage')
     return 'database'
   }
 

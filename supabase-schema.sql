@@ -96,3 +96,31 @@ CREATE TRIGGER trigger_update_stats_on_verification
     AFTER UPDATE OF is_verified ON registrations
     FOR EACH ROW
     EXECUTE FUNCTION update_stats_on_verification();
+
+-- Additional trigger to handle verification counter increases
+CREATE OR REPLACE FUNCTION increment_verified_count()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Only increment if email was just verified (changed from false to true)
+    IF NEW.is_verified = true AND (OLD.is_verified = false OR OLD.is_verified IS NULL) THEN
+        UPDATE stats SET 
+            verified_registrations = verified_registrations + 1,
+            total_registrations = GREATEST(total_registrations, verified_registrations + 1),
+            updated_at = NOW()
+        WHERE id = (SELECT id FROM stats LIMIT 1);
+        
+        -- If no stats record exists, create one
+        IF NOT FOUND THEN
+            INSERT INTO stats (verified_registrations, total_registrations, pending_registrations)
+            VALUES (1, 1, 0);
+        END IF;
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger for verification counter
+CREATE TRIGGER trigger_increment_verified_count
+    AFTER UPDATE OF is_verified ON registrations
+    FOR EACH ROW
+    EXECUTE FUNCTION increment_verified_count();

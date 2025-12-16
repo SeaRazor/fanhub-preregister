@@ -41,13 +41,13 @@ class StorageFactory {
                        process.env.DB_USER && 
                        process.env.DB_PASSWORD
 
-    // Prefer Supabase if configured
+    // Prefer Supabase if configured (works in both local and Vercel environments)
     if (hasSupabaseConfig) {
       return 'supabase'
     }
 
-    // In Vercel serverless environment, use JSON with /tmp storage
-    if (process.env.VERCEL) {
+    // In Vercel serverless environment without Supabase, use JSON with /tmp storage
+    if (process.env.VERCEL && !hasSupabaseConfig) {
       return 'json'
     }
 

@@ -176,7 +176,7 @@ export default class SupabaseStorage extends BaseStorage {
           totalPending: stats.pending_registrations || 0,
           total: stats.total_registrations || 0,
           fakeBaseCount: 0,
-          displayCount: stats.total_registrations || 0
+          displayCount: stats.verified_registrations || 0
         }
       } else {
         throw new Error('No stats records found in database')

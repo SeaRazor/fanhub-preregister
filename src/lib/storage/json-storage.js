@@ -11,8 +11,10 @@ class JsonStorage extends BaseStorage {
   
   constructor() {
     super()
-    this.dataFile = path.join(process.cwd(), 'data', 'registrations.json')
-    this.lockFile = path.join(process.cwd(), 'data', '.lock')
+    // Use /tmp directory in serverless environments, data directory locally
+    const dataDir = process.env.VERCEL ? '/tmp' : path.join(process.cwd(), 'data')
+    this.dataFile = path.join(dataDir, 'registrations.json')
+    this.lockFile = path.join(dataDir, '.lock')
   }
 
   /**

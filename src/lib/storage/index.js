@@ -1,5 +1,7 @@
 import JsonStorage from './json-storage.js'
 import DatabaseStorage from './database-storage.js'
+import MemoryStorage from './memory-storage.js'
+import SupabaseStorage from './supabase-storage.js'
 
 /**
  * Storage factory that automatically selects the appropriate storage implementation
@@ -14,7 +16,7 @@ class StorageFactory {
 
   /**
    * Determine which storage type to use based on environment
-   * @returns {string} 'json' or 'database'
+   * @returns {string} 'memory', 'json', 'database', or 'supabase'
    */
   detectStorageType() {
     // Check explicit environment variable first
@@ -22,14 +24,35 @@ class StorageFactory {
       return process.env.STORAGE_TYPE.toLowerCase()
     }
 
+    // Check for Supabase configuration
+    const hasSupabaseConfig = process.env.NEXT_PUBLIC_SUPABASE_URL && 
+                             (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY)
+    
+    console.log('Storage detection:', {
+      explicitType: process.env.STORAGE_TYPE,
+      hasSupabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+      hasSupabaseKey: !!(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY),
+      hasSupabaseConfig
+    })
+
     // Auto-detect based on available configuration
     const hasDbConfig = process.env.DB_HOST && 
                        process.env.DB_NAME && 
                        process.env.DB_USER && 
                        process.env.DB_PASSWORD
 
-    // In Vercel environment or when DB config is missing, use JSON
-    if (process.env.VERCEL || !hasDbConfig) {
+    // Prefer Supabase if configured
+    if (hasSupabaseConfig) {
+      return 'supabase'
+    }
+
+    // In Vercel serverless environment, use JSON with /tmp storage
+    if (process.env.VERCEL) {
+      return 'json'
+    }
+
+    // Local environment without DB config, use JSON
+    if (!hasDbConfig) {
       return 'json'
     }
 
@@ -54,6 +77,11 @@ class StorageFactory {
 
     try {
       switch (currentStorageType) {
+        case 'memory':
+          this._storage = new MemoryStorage()
+          this._storageType = 'memory'
+          break
+          
         case 'json':
           this._storage = new JsonStorage()
           this._storageType = 'json'
@@ -64,10 +92,15 @@ class StorageFactory {
           this._storageType = 'database'
           break
           
+        case 'supabase':
+          this._storage = new SupabaseStorage()
+          this._storageType = 'supabase'
+          break
+          
         default:
-          console.warn(`Unknown storage type: ${currentStorageType}, falling back to JSON`)
-          this._storage = new JsonStorage()
-          this._storageType = 'json'
+          console.warn(`Unknown storage type: ${currentStorageType}, falling back to memory`)
+          this._storage = new MemoryStorage()
+          this._storageType = 'memory'
       }
 
       return this._storage
@@ -75,15 +108,11 @@ class StorageFactory {
     } catch (error) {
       console.error(`Failed to initialize ${currentStorageType} storage:`, error)
       
-      // Fallback to JSON storage if database fails
-      if (currentStorageType === 'database') {
-        console.log('Falling back to JSON storage...')
-        this._storage = new JsonStorage()
-        this._storageType = 'json'
-        return this._storage
-      }
-      
-      throw error
+      // Fallback to memory storage for any failures
+      console.log('Falling back to memory storage...')
+      this._storage = new MemoryStorage()
+      this._storageType = 'memory'
+      return this._storage
     }
   }
 

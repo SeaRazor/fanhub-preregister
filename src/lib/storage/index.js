@@ -21,8 +21,14 @@ class StorageFactory {
   detectStorageType() {
     // Check explicit environment variable first
     if (process.env.STORAGE_TYPE) {
-      console.log(`Using explicit storage type: ${process.env.STORAGE_TYPE}`)
-      return process.env.STORAGE_TYPE.toLowerCase()
+      console.log(`Found STORAGE_TYPE env var: "${process.env.STORAGE_TYPE}" (typeof: ${typeof process.env.STORAGE_TYPE})`)
+      if (process.env.STORAGE_TYPE.toLowerCase() === 'supabase') {
+        console.log('Using explicit Supabase storage from env var')
+        return 'supabase'
+      } else {
+        console.log(`Explicit storage type set to: ${process.env.STORAGE_TYPE}`)
+        return process.env.STORAGE_TYPE.toLowerCase()
+      }
     }
 
     // Check for Supabase configuration

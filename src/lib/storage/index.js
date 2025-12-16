@@ -21,6 +21,7 @@ class StorageFactory {
   detectStorageType() {
     // Check explicit environment variable first
     if (process.env.STORAGE_TYPE) {
+      console.log(`Using explicit storage type: ${process.env.STORAGE_TYPE}`)
       return process.env.STORAGE_TYPE.toLowerCase()
     }
 
@@ -28,11 +29,14 @@ class StorageFactory {
     const hasSupabaseConfig = process.env.NEXT_PUBLIC_SUPABASE_URL && 
                              (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY)
     
-    console.log('Storage detection:', {
+    console.log('Storage detection debug:', {
       explicitType: process.env.STORAGE_TYPE,
       hasSupabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
-      hasSupabaseKey: !!(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY),
-      hasSupabaseConfig
+      hasSupabaseAnonKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      hasSupabaseServiceKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+      hasSupabaseConfig,
+      isVercel: !!process.env.VERCEL,
+      selectedType: 'will be determined below'
     })
 
     // Auto-detect based on available configuration
@@ -43,20 +47,24 @@ class StorageFactory {
 
     // Prefer Supabase if configured (works in both local and Vercel environments)
     if (hasSupabaseConfig) {
+      console.log('Selecting Supabase storage (has config)')
       return 'supabase'
     }
 
     // In Vercel serverless environment without Supabase, use JSON with /tmp storage
     if (process.env.VERCEL && !hasSupabaseConfig) {
+      console.log('Selecting JSON storage (Vercel without Supabase)')
       return 'json'
     }
 
     // Local environment without DB config, use JSON
     if (!hasDbConfig) {
+      console.log('Selecting JSON storage (no DB config)')
       return 'json'
     }
 
     // Default to database if configuration is available
+    console.log('Selecting database storage (fallback)')
     return 'database'
   }
 

@@ -6,11 +6,16 @@ import db from '../database.js'
  */
 class DatabaseStorage extends BaseStorage {
 
-  async addRegistration(email) {
+  async addRegistration(email, fullName) {
     const normalizedEmail = this.normalizeEmail(email)
+    const trimmedFullName = fullName?.trim()
     
     if (!this.validateEmail(normalizedEmail)) {
       throw new Error('Invalid email format')
+    }
+
+    if (!trimmedFullName || trimmedFullName.length < 2) {
+      throw new Error('Full name is required and must be at least 2 characters')
     }
 
     // Check if email already exists
@@ -25,17 +30,18 @@ class DatabaseStorage extends BaseStorage {
     const verificationExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000)
 
     const insertQuery = `
-      INSERT INTO registrations (email, status, verification_token, verification_expires_at)
-      VALUES ($1, $2, $3, $4)
-      RETURNING id, email, status, created_at, verification_token, verification_expires_at
+      INSERT INTO registrations (email, full_name, status, verification_token, verification_expires_at)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING id, email, full_name, status, created_at, verification_token, verification_expires_at
     `
     
-    const result = await db.query(insertQuery, [normalizedEmail, 'pending', verificationToken, verificationExpiresAt])
+    const result = await db.query(insertQuery, [normalizedEmail, trimmedFullName, 'pending', verificationToken, verificationExpiresAt])
     const registration = result.rows[0]
     
     return this.formatRegistration({
       id: registration.id,
       email: registration.email,
+      fullName: registration.full_name,
       status: registration.status,
       createdAt: registration.created_at,
       verificationToken: registration.verification_token,
@@ -56,6 +62,7 @@ class DatabaseStorage extends BaseStorage {
     return this.formatRegistration({
       id: registration.id,
       email: registration.email,
+      fullName: registration.full_name,
       status: registration.status,
       createdAt: registration.created_at,
       verificationToken: registration.verification_token,

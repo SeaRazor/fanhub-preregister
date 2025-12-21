@@ -14,6 +14,7 @@ function getFakePreRegisterCount() {
 
 export default function Home() {
   const [email, setEmail] = useState('')
+  const [fullName, setFullName] = useState('')
   const [isRegistered, setIsRegistered] = useState(false)
   const [userCount, setUserCount] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -51,7 +52,7 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, fullName }),
       })
 
       const data = await response.json()
@@ -59,6 +60,7 @@ export default function Home() {
       if (response.ok) {
         setIsRegistered(true)
         setEmail('')
+        setFullName('')
         // Reload stats to get updated count
         loadStats()
       } else {
@@ -72,137 +74,113 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1A1A2E] via-[#2C5282] to-[#4A90E2] text-white">
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-4xl mx-auto text-center">
+    <div className="min-h-screen bg-gradient-to-b from-[#2d1b69] via-[#1e3a8a] to-[#1e40af] text-white">
+      <div className="container mx-auto px-6 py-8">
+        <div className="max-w-md mx-auto text-center">
           <div className="mb-8">
-            <div className="flex justify-center mb-6">
+            <div className="flex items-center justify-center mb-6">
               <Image
-                src="/logo.png"
+                src="/logo-transparent.png"
                 alt="Scorefluence Logo"
-                width={120}
-                height={120}
-                className="w-24 h-24 md:w-32 md:h-32"
+                width={60}
+                height={60}
+                className="w-12 h-12 mr-3"
               />
+              <div className="text-left">
+                <h1 className="text-2xl font-bold text-white">
+                  SCOREFLUENCE™
+                </h1>
+                <p className="text-sm text-gray-300">
+                  AI-powered fan engagement
+                </p>
+              </div>
             </div>
-            <h1 className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-[#4A90E2] to-[#6BB6FF] bg-clip-text text-transparent mb-4">
-              Scorefluence
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-300 mb-2">
-              The Ultimate Sports Fan Experience
-            </p>
-            <p className="text-lg text-gray-400">
-              Coming July 20, 2026
-            </p>
           </div>
 
-          <div className="mb-12">
-            <div className="inline-block bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-8 border border-[#4A90E2]/20">
-              <div className="text-4xl md:text-5xl font-bold text-[#00BCD4] mb-2">
-                {userCount.toLocaleString()}
-              </div>
-              <div className="text-lg text-gray-300">
-                Fans Already Pre-Registered
-              </div>
-            </div>
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-white mb-4 leading-tight">
+              Be the first to join Scorefluence
+            </h2>
+            <p className="text-gray-300 mb-8 leading-relaxed">
+              Pre-register ahead of our launch and get early access to exclusive rewards.
+            </p>
           </div>
 
           {!isRegistered ? (
-            <div className="max-w-md mx-auto mb-16">
-              <h3 className="text-2xl font-bold mb-6">
-                Be the First to Know
-              </h3>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <input
-                  type="email"
-                  placeholder="Enter your email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  disabled={isSubmitting}
-                  className="w-full px-6 py-4 rounded-lg bg-white/10 backdrop-blur-sm border border-[#4A90E2]/40 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-[#00BCD4] focus:border-[#6BB6FF] disabled:opacity-50 disabled:cursor-not-allowed"
-                />
-                {error && (
-                  <div className="bg-red-500/20 border border-red-400/30 rounded-lg p-3">
-                    <p className="text-red-400 text-sm">{error}</p>
+            <div className="mb-8">
+              <div className="bg-gradient-to-br from-[#1e1b4b] via-[#312e81] to-[#4c1d95] backdrop-blur-sm rounded-2xl p-6 border border-[#6366f1]/40">
+                <div className="text-lg text-white font-medium mb-4">
+                  Current registered members:
+                </div>
+                <div className="bg-gradient-to-r from-[#4338ca] to-[#7c3aed] rounded-xl p-4 inline-block mb-6">
+                  <div className="text-4xl font-bold text-white">
+                    {userCount.toLocaleString()}
                   </div>
-                )}
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-gradient-to-r from-[#4A90E2] to-[#6BB6FF] hover:from-[#2C5282] hover:to-[#4A90E2] text-white font-semibold py-4 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#00BCD4] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                >
-                  {isSubmitting ? 'Sending...' : 'Pre-Register Now'}
-                </button>
-              </form>
-              <p className="text-sm text-gray-400 mt-4">
-                Get early access, exclusive rewards, and be first in line for launch
-              </p>
+                </div>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-gray-300 text-sm mb-2">Full Name:</label>
+                    <input
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      required
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 rounded-lg bg-[#0a0a1a] border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:border-[#6366f1] disabled:opacity-50"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-gray-300 text-sm mb-2">Email Address</label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 rounded-lg bg-[#0a0a1a] border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:border-[#6366f1] disabled:opacity-50"
+                    />
+                  </div>
+                  
+                  {error && (
+                    <div className="bg-red-500/20 border border-red-400/30 rounded-lg p-3">
+                      <p className="text-red-400 text-sm">{error}</p>
+                    </div>
+                  )}
+                  
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || !email || !fullName}
+                    className="w-full bg-gradient-to-r from-[#4338ca] to-[#7c3aed] hover:from-[#3730a3] hover:to-[#6b21a8] text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-[1.02] shadow-lg shadow-[#4338ca]/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                  >
+                    {isSubmitting ? 'Sending...' : 'Pre-register now'}
+                  </button>
+                </form>
+              </div>
             </div>
           ) : (
-            <div className="max-w-md mx-auto mb-16">
-              <div className="bg-[#00BCD4]/20 backdrop-blur-sm border border-[#00BCD4]/30 rounded-lg p-8">
-                <div className="text-4xl mb-4">📧</div>
-                <h3 className="text-2xl font-bold mb-4 text-[#00BCD4]">
+            <div className="mb-8">
+              <div className="bg-[#6366f1]/20 backdrop-blur-sm border border-[#6366f1]/30 rounded-2xl p-6">
+                <div className="text-3xl mb-3">✓</div>
+                <h3 className="text-xl font-bold mb-3 text-white">
                   Check Your Email!
                 </h3>
-                <p className="text-gray-300 mb-4">
-                  We've sent you a verification email. Please click the link in the email to complete your 
-                  registration and secure your spot for early access.
+                <p className="text-gray-300 text-sm mb-3">
+                  We've sent you a verification email. Please click the link to complete your registration.
                 </p>
-                <div className="bg-white/5 backdrop-blur-sm rounded-lg p-4 border border-[#4A90E2]/10 mb-4">
-                  <p className="text-sm text-gray-300">
-                    <strong className="text-[#00BCD4]">Important:</strong> The verification link expires in 24 hours for security.
-                  </p>
-                </div>
-                <p className="text-sm text-gray-400">
-                  Didn't receive the email? Check your spam folder or try registering again.
+                <p className="text-xs text-gray-400">
+                  Didn't receive the email? Check your spam folder.
                 </p>
               </div>
             </div>
           )}
 
-          <div className="max-w-2xl mx-auto mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Where Sports Passion Meets Community
-            </h2>
-            <p className="text-lg md:text-xl text-gray-300 mb-8 leading-relaxed">
-              Join the revolutionary platform that brings sports fans closer to their teams, 
-              players, and fellow supporters. Experience live matches, earn rewards, and 
-              connect with a global community of passionate fans.
+          <div className="mt-12 pt-8 border-t border-white/20 text-center">
+            <p className="text-gray-400 text-sm mb-2">
+              1 Mann Island, 3rd Floor, Liverpool, L3 1BP
             </p>
-            
-            <div className="grid md:grid-cols-3 gap-6 mb-12">
-              <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-[#4A90E2]/10">
-                <h3 className="text-xl font-semibold mb-3 text-[#00BCD4]">Live Matches & Scores</h3>
-                <p className="text-gray-400">
-                  Follow Premier League, NBA, NFL, and more with real-time scores and live commentary
-                </p>
-              </div>
-              <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-[#4A90E2]/10">
-                <h3 className="text-xl font-semibold mb-3 text-[#6BB6FF]">Earn Rewards</h3>
-                <p className="text-gray-400">
-                  Predict match outcomes, complete challenges, and earn points for exclusive rewards
-                </p>
-              </div>
-              <div className="bg-white/5 backdrop-blur-sm rounded-lg p-6 border border-[#4A90E2]/10">
-                <h3 className="text-xl font-semibold mb-3 text-[#E91E63]">Fan Communities</h3>
-                <p className="text-gray-400">
-                  Connect with supporters worldwide, share match moments, and climb the leaderboards
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-16 pt-8 border-t border-white/10">
-            <p className="text-gray-400">
-              Follow us for updates: 
-              <span className="mx-2">•</span>
-              <a href="#" className="text-[#4A90E2] hover:text-[#6BB6FF] transition-colors">Twitter</a>
-              <span className="mx-2">•</span>
-              <a href="#" className="text-[#4A90E2] hover:text-[#6BB6FF] transition-colors">Instagram</a>
-              <span className="mx-2">•</span>
-              <a href="#" className="text-[#4A90E2] hover:text-[#6BB6FF] transition-colors">Discord</a>
+            <p className="text-gray-400 text-sm">
+              play@scorefluence.ai
             </p>
           </div>
         </div>

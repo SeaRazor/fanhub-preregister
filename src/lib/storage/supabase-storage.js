@@ -7,10 +7,21 @@ export default class SupabaseStorage extends BaseStorage {
     this.supabase = supabaseAdmin
   }
 
-  async addRegistration(email) {
+  async addRegistration(email, fullName) {
     try {
+      const normalizedEmail = this.normalizeEmail(email)
+      const trimmedFullName = fullName?.trim()
+      
+      if (!this.validateEmail(normalizedEmail)) {
+        throw new Error('Invalid email format')
+      }
+
+      if (!trimmedFullName || trimmedFullName.length < 2) {
+        throw new Error('Full name is required and must be at least 2 characters')
+      }
+
       // Check if email already exists
-      const existing = await this.isEmailRegistered(email)
+      const existing = await this.isEmailRegistered(normalizedEmail)
       if (existing) {
         throw new Error('Email already registered')
       }
@@ -22,7 +33,8 @@ export default class SupabaseStorage extends BaseStorage {
         .from('registrations')
         .insert([
           { 
-            email: this.normalizeEmail(email),
+            email: normalizedEmail,
+            full_name: trimmedFullName,
             created_at: new Date().toISOString(),
             is_verified: false,
             verification_token: verificationToken,
@@ -37,6 +49,7 @@ export default class SupabaseStorage extends BaseStorage {
       return this.formatRegistration({
         id: data.id,
         email: data.email,
+        fullName: data.full_name,
         status: data.is_verified ? 'verified' : 'pending',
         createdAt: data.created_at,
         verificationToken: data.verification_token,
@@ -67,6 +80,7 @@ export default class SupabaseStorage extends BaseStorage {
       return this.formatRegistration({
         id: data.id,
         email: data.email,
+        fullName: data.full_name,
         status: data.is_verified ? 'verified' : 'pending',
         createdAt: data.created_at,
         verificationToken: data.verification_token,

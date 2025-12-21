@@ -9,10 +9,11 @@ class BaseStorage {
   /**
    * Add a new registration
    * @param {string} email - User email address
-   * @returns {Promise<Object>} Registration object with id, email, status, etc.
+   * @param {string} fullName - User full name
+   * @returns {Promise<Object>} Registration object with id, email, fullName, status, etc.
    * @throws {Error} If email already exists
    */
-  async addRegistration(email) {
+  async addRegistration(email, fullName) {
     throw new Error('addRegistration method must be implemented')
   }
 
@@ -92,6 +93,7 @@ class BaseStorage {
     return {
       id: data.id?.toString(),
       email: data.email,
+      fullName: data.fullName,
       status: data.status,
       createdAt: data.createdAt instanceof Date ? data.createdAt.toISOString() : data.createdAt,
       verificationToken: data.verificationToken,

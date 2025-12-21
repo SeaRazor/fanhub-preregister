@@ -11,15 +11,17 @@ class EmailService {
     this.fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@scorefluence.com'
   }
 
-  async sendVerificationEmail(email, token) {
+  async sendVerificationEmail(email, token, fullName = null) {
     if (!this.resend) {
       console.warn('⚠️ Email service not configured - skipping email send in development')
-      console.log(`📧 Would send verification email to: ${email}`)
+      console.log(`📧 Would send verification email to: ${email}${fullName ? ` (${fullName})` : ''}`)
       console.log(`🔗 Verification URL: ${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/verify?token=${token}`)
       return { id: 'dev-mode-skip', message: 'Email sending skipped in development' }
     }
 
     const verificationUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/verify?token=${token}`
+    const greeting = fullName ? `Hi ${fullName},` : 'Hi there,'
+    const welcomeText = fullName ? `${fullName}, you're one step away from joining the ultimate sports fan experience.` : "You're one step away from joining the ultimate sports fan experience."
     
     try {
       const data = await this.resend.emails.send({
@@ -31,7 +33,8 @@ class EmailService {
             <div style="padding: 40px 30px; text-align: center;">
               <div style="background: rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 30px; margin-bottom: 30px;">
                 <h1 style="margin: 0 0 20px 0; color: #6BB6FF; font-size: 28px;">Welcome to Scorefluence!</h1>
-                <p style="margin: 0 0 20px 0; font-size: 18px; color: #E5E5E5;">You're one step away from joining the ultimate sports fan experience.</p>
+                <p style="margin: 0 0 10px 0; font-size: 18px; color: #E5E5E5;">${greeting}</p>
+                <p style="margin: 0 0 20px 0; font-size: 16px; color: #E5E5E5;">${welcomeText}</p>
                 
                 <div style="background: rgba(0, 188, 212, 0.2); border: 1px solid rgba(0, 188, 212, 0.3); border-radius: 8px; padding: 20px; margin: 20px 0;">
                   <p style="margin: 0; font-size: 16px; color: #00BCD4;">🏆 Early Access Benefits:</p>
@@ -62,7 +65,9 @@ class EmailService {
         text: `
 Welcome to Scorefluence!
 
-You're one step away from joining the ultimate sports fan experience.
+${greeting}
+
+${welcomeText}
 
 Please verify your email by clicking this link:
 ${verificationUrl}

@@ -9,11 +9,18 @@ function validateEmail(email) {
 
 export async function POST(request) {
   try {
-    const { email } = await request.json()
+    const { email, fullName } = await request.json()
 
     if (!email) {
       return NextResponse.json(
         { error: 'Email is required' },
+        { status: 400 }
+      )
+    }
+
+    if (!fullName || fullName.trim().length < 2) {
+      return NextResponse.json(
+        { error: 'Full name is required and must be at least 2 characters' },
         { status: 400 }
       )
     }
@@ -26,11 +33,12 @@ export async function POST(request) {
     }
 
     const normalizedEmail = email.toLowerCase().trim()
+    const trimmedFullName = fullName.trim()
 
     try {
-      const registration = await storage.addRegistration(normalizedEmail)
+      const registration = await storage.addRegistration(normalizedEmail, trimmedFullName)
       
-      await emailService.sendVerificationEmail(normalizedEmail, registration.verificationToken)
+      await emailService.sendVerificationEmail(normalizedEmail, registration.verificationToken, trimmedFullName)
 
       return NextResponse.json({
         success: true,

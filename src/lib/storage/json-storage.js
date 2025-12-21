@@ -80,11 +80,16 @@ class JsonStorage extends BaseStorage {
     return Date.now().toString() + Math.random().toString(36).substr(2, 9)
   }
 
-  async addRegistration(email) {
+  async addRegistration(email, fullName) {
     const normalizedEmail = this.normalizeEmail(email)
+    const trimmedFullName = fullName?.trim()
     
     if (!this.validateEmail(normalizedEmail)) {
       throw new Error('Invalid email format')
+    }
+
+    if (!trimmedFullName || trimmedFullName.length < 2) {
+      throw new Error('Full name is required and must be at least 2 characters')
     }
 
     const data = await this.readData()
@@ -102,6 +107,7 @@ class JsonStorage extends BaseStorage {
     const registration = {
       id: this.generateId(),
       email: normalizedEmail,
+      fullName: trimmedFullName,
       status: 'pending',
       createdAt: now.toISOString(),
       verificationToken: verificationToken,

@@ -2,6 +2,7 @@
 CREATE TABLE registrations (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
+    full_name VARCHAR(255) NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     is_verified BOOLEAN DEFAULT FALSE,
     verified_at TIMESTAMP WITH TIME ZONE NULL,

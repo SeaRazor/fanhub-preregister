@@ -18,11 +18,16 @@ class MemoryStorage extends BaseStorage {
     }
   }
 
-  async addRegistration(email) {
+  async addRegistration(email, fullName) {
     const normalizedEmail = this.normalizeEmail(email)
+    const trimmedFullName = fullName?.trim()
     
     if (!this.validateEmail(normalizedEmail)) {
       throw new Error('Invalid email format')
+    }
+
+    if (!trimmedFullName || trimmedFullName.length < 2) {
+      throw new Error('Full name is required and must be at least 2 characters')
     }
 
     // Check if email already exists
@@ -38,6 +43,7 @@ class MemoryStorage extends BaseStorage {
     const registration = {
       id: this.generateId(),
       email: normalizedEmail,
+      fullName: trimmedFullName,
       status: 'pending',
       createdAt: now.toISOString(),
       verificationToken: verificationToken,

@@ -12,5 +12,12 @@
   },
   "env": {
     "STORAGE_TYPE": "json"
-  }
+  },
+  "redirects": [
+    {
+      "source": "/register",
+      "destination": "/preregister",
+      "permanent": true
+    }
+  ]
 }

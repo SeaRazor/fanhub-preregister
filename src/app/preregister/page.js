@@ -19,10 +19,15 @@ export default function PreRegister() {
   const [userCount, setUserCount] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
+  
+  // Check if maintenance mode is enabled
+  const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'true'
 
   useEffect(() => {
-    loadStats()
-  }, [])
+    if (!isMaintenanceMode) {
+      loadStats()
+    }
+  }, [isMaintenanceMode])
 
   const loadStats = async () => {
     try {
@@ -43,6 +48,12 @@ export default function PreRegister() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    
+    // Prevent submission in maintenance mode
+    if (isMaintenanceMode) {
+      return
+    }
+    
     setError('')
     setIsSubmitting(true)
 
@@ -106,7 +117,24 @@ export default function PreRegister() {
             </p>
           </div>
 
-          {!isRegistered ? (
+          {isMaintenanceMode ? (
+            <div className="mb-8">
+              <div className="bg-gradient-to-br from-[#1e1b4b] via-[#312e81] to-[#4c1d95] backdrop-blur-sm rounded-2xl p-8 border border-[#6366f1]/40">
+                <div className="text-6xl mb-6">🚧</div>
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  Coming Very Soon!
+                </h3>
+                <p className="text-gray-300 text-lg mb-6">
+                  We're putting the finishing touches on Scorefluence. Pre-registration will be available shortly.
+                </p>
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                  <p className="text-sm text-gray-300">
+                    <strong className="text-[#6366f1]">Stay tuned:</strong> Follow us for updates on when registration opens!
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : !isRegistered ? (
             <div className="mb-8">
               <div className="bg-gradient-to-br from-[#1e1b4b] via-[#312e81] to-[#4c1d95] backdrop-blur-sm rounded-2xl p-6 border border-[#6366f1]/40">
                 <div className="text-lg text-white font-medium mb-4">

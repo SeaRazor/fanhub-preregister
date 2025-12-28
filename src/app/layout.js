@@ -12,8 +12,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "FanHub - Coming Soon",
-  description: "Pre-register for the ultimate fan experience platform",
+  title: "Scorefluence - Pre-Register",
+  description: "Pre-register for Scorefluence - AI-powered fan engagement platform. Get early access to exclusive rewards.",
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/logo-transparent.png',
+  },
 };
 
 export default function RootLayout({ children }) {

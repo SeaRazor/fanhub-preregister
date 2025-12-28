@@ -16,7 +16,7 @@ export default function PreRegister() {
   const [email, setEmail] = useState('')
   const [fullName, setFullName] = useState('')
   const [isRegistered, setIsRegistered] = useState(false)
-  const [userCount, setUserCount] = useState(0)
+  const [userCount, setUserCount] = useState(11567) // Default placeholder value
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
   

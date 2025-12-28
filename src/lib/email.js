@@ -29,15 +29,15 @@ class EmailService {
         to: [email],
         subject: '⚽ Verify your Scorefluence pre-registration',
         html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #1A1A2E 0%, #2C5282 50%, #4A90E2 100%); color: white; border-radius: 12px; overflow: hidden;">
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #2d1b69 0%, #1e3a8a 50%, #1e40af 100%); color: white; border-radius: 12px; overflow: hidden;">
             <div style="padding: 40px 30px; text-align: center;">
               <div style="background: rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 30px; margin-bottom: 30px;">
-                <h1 style="margin: 0 0 20px 0; color: #6BB6FF; font-size: 28px;">Welcome to Scorefluence!</h1>
+                <h1 style="margin: 0 0 20px 0; color: #a78bfa; font-size: 28px;">Welcome to Scorefluence!</h1>
                 <p style="margin: 0 0 10px 0; font-size: 18px; color: #E5E5E5;">${greeting}</p>
                 <p style="margin: 0 0 20px 0; font-size: 16px; color: #E5E5E5;">${welcomeText}</p>
                 
-                <div style="background: rgba(0, 188, 212, 0.2); border: 1px solid rgba(0, 188, 212, 0.3); border-radius: 8px; padding: 20px; margin: 20px 0;">
-                  <p style="margin: 0; font-size: 16px; color: #00BCD4;">🏆 Early Access Benefits:</p>
+                <div style="background: rgba(124, 58, 237, 0.2); border: 1px solid rgba(124, 58, 237, 0.4); border-radius: 8px; padding: 20px; margin: 20px 0;">
+                  <p style="margin: 0; font-size: 16px; color: #7c3aed;">🏆 Early Access Benefits:</p>
                   <ul style="text-align: left; margin: 10px 0 0 20px; color: #E5E5E5; font-size: 14px;">
                     <li>First access to live matches and scores</li>
                     <li>Exclusive launch rewards and points</li>
@@ -46,7 +46,7 @@ class EmailService {
                   </ul>
                 </div>
                 
-                <a href="${verificationUrl}" style="display: inline-block; background: linear-gradient(135deg, #4A90E2 0%, #6BB6FF 100%); color: white; text-decoration: none; padding: 15px 30px; border-radius: 8px; font-weight: bold; font-size: 16px; margin: 20px 0;">
+                <a href="${verificationUrl}" style="display: inline-block; background: linear-gradient(135deg, #4338ca 0%, #7c3aed 100%); color: white; text-decoration: none; padding: 15px 30px; border-radius: 8px; font-weight: bold; font-size: 16px; margin: 20px 0;">
                   Verify Your Email
                 </a>
                 
